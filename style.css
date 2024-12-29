@@ -1,0 +1,13 @@
+.center {
+  text-align: center;
+}
+
+hr {
+margin-bottom: 20px;
+}
+
+#clock {
+position: fixed;
+right: 2%;
+font-size: 20px;
+}
