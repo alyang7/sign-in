@@ -8,19 +8,20 @@
   </head>
   <body>
     <div id="clock"></div> 
-    <h1 class="center">Searching 4 Shows</h1>
+    <h1 class="center">Shrek the Musical: Sign-In Sheet</h1>
     <hr>
-    <input id="txt-search" placeholder="Enter a name">
-    <button id="search">Search</button>
-    <div id="container"></div>
-    <h1>Shows</h1>
-    <hr>
-    <div id="shows"></div>
-    <button id="authorize_button" onclick="listMajors()">Authorize</button>
-    <pre id="content" style="white-space: pre-wrap;"></pre>
+    <div class="flex-container">
+      <button class="signinbutton x1" onclick="location.href='user.html'">I am a User</button>
+      <button class="signinbutton x1" onclick="openPopup()">I am an Admin</button> 
+    </div>
+    <div id="pswdPopUp">
+      <p>Sign In: </p>
+      <input id="pswdBox" placeholder="Enter password">
+      <button onclick="checkValue()">Enter</button>
+      <button onclick="openPopup()">Cancel</button>
+    </div>
+    
     <script src="clock.js"></script>
     <script src="index.js"></script>
-    <script async defer src="https://apis.google.com/js/api.js" onload="gapiLoaded()"></script>
-    <script async defer src="https://accounts.google.com/gsi/client" onload="gisLoaded()"></script>
   </body>
 </html>

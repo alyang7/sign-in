@@ -1,13 +1,48 @@
+hr {
+  margin-bottom: 20px;
+}
+
+p {
+  margin-bottom: 15px;
+  font-size: 18px;
+}
+
+button {
+  margin: 10px;
+}
+
 .center {
   text-align: center;
 }
 
-hr {
-margin-bottom: 20px;
+.flex-container { 
+  display: flex; 
+  align-items: flex-start;
+}
+.x1 { flex: 1; }
+.x2 { flex: 2; }
+
+.signinbutton {
+  padding: 8%;
+  font-size: 2vw;
+  font-family: Verdana;
 }
 
 #clock {
 position: fixed;
 right: 2%;
 font-size: 20px;
+}
+
+#pswdPopUp {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  padding: 20px;
+  background-color: #fff;
+  border-radius: 8px;
+  box-shadow: 0 0 20px rgba(0, 0, 0, 0.3);
+  z-index: 1000;
+  visibility: hidden;
 }
