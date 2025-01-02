@@ -1,3 +1,4 @@
+/*General*/
 hr {
   margin-bottom: 20px;
 }
@@ -11,6 +12,7 @@ button {
   margin: 10px;
 }
 
+/*Common Classes*/
 .center {
   text-align: center;
 }
@@ -22,16 +24,35 @@ button {
 .x1 { flex: 1; }
 .x2 { flex: 2; }
 
+/*Classes*/
 .signinbutton {
   padding: 8%;
   font-size: 2vw;
   font-family: Verdana;
 }
 
-#clock {
+/*Ids*/
+/*#clock {
 position: fixed;
 right: 2%;
 font-size: 20px;
+}*/
+
+#name_boxes {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+#name_boxes > div {
+  border: 2px, solid;
+  padding-top: 15px;
+  padding-bottom: 15px;
+  margin: 8px;
+  width: 15vw;
+  text-align: center;
+}
+#name_boxes > div:hover {
+  cursor: pointer;
 }
 
 #pswdPopUp {
