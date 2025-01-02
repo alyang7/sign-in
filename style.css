@@ -1,3 +1,9 @@
+input {
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  appearance: none;
+}
+
 /*General*/
 hr {
   margin-bottom: 20px;
