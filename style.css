@@ -1,9 +1,3 @@
-input {
-  -webkit-appearance: none;
-  -moz-appearance: none;
-  appearance: none;
-}
-
 /*General*/
 hr {
   margin-bottom: 20px;
@@ -50,7 +44,7 @@ font-size: 20px;
   justify-content: center;
 }
 #name_boxes > div {
-  border: 2px, solid;
+  border: 2px, solid, black;
   padding-top: 15px;
   padding-bottom: 15px;
   margin: 8px;
