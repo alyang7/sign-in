@@ -15,9 +15,14 @@
     <hr>
     
     <div id="name_boxes"></div>
-    <button id="authorize_button" onclick="handleAuthClick()">Authorize</button>
+    <div id="signinPopUp">
+      <p>In order to sync your google sheets: </p>
+      <button id="authorize_button" onclick="handleAuthClick()">Log In with Google</button>
+      <p>OR...</p>
+      <button onclick="openPopup()">Proceed without syncing google accounts</button>
+    </div>
+    
     <button id="signout_button" onclick="handleSignoutClick()">Sign Out</button>
-    <pre id="content" style="white-space: pre-wrap;"></pre>
     <script src="clock.js"></script>
     <script src="user.js"></script>
     <script async defer src="https://apis.google.com/js/api.js" onload="gapiLoaded()"></script>

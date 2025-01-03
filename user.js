@@ -1,6 +1,17 @@
 const date = document.getElementById("date");
 const agenda = document.getElementById("agenda");
 const name_boxes = document.getElementById('name_boxes');
+let lateStatus = false;
+let potentialStart;
+
+function openPopup() {
+  const popDialog = document.getElementById("signinPopUp");
+  popDialog.style.visibility =
+      popDialog.style.visibility ===
+          "hidden"
+          ? "visible"
+          : "hidden";
+}
 
 /*google sheets initialization*/
 const CLIENT_ID = '627128585914-0pbleafinvi8961jblr8dq7qf6eetnav.apps.googleusercontent.com';
@@ -36,9 +47,16 @@ function handleAuthClick() {
     if (resp.error !== undefined) {
       throw (resp);
     }
-  };
-  colorCells();
+  };  
   tokenClient.requestAccessToken({prompt: ''});
+  colorCells();
+  for (const child of name_boxes.children) {
+    child.addEventListener("mouseover", function() {
+      this.style.cursor = "pointer";
+    });
+  }
+  document.getElementById('signout_button').style.visibility = 'visible';
+  openPopup();
 }
 function handleSignoutClick() {
   const token = gapi.client.getToken();
@@ -47,6 +65,7 @@ function handleSignoutClick() {
     gapi.client.setToken('');
     document.getElementById('content').innerText = '';
   }
+  openPopup();
 }
 
 
@@ -113,19 +132,19 @@ async function loadNames() {
     oneName.innerHTML = nameArray[i];
     name_boxes.appendChild(oneName);
   }
-}
 
-async function colorCells() {
   let colNum = await matchDates('Attendance!B4:BD4') + 2;
-
   let statusArray = await getCol('Attendance!R6C' + colNum + ':R45C' + colNum);
   for(let i = 0; i < statusArray.length; i++) {
     if(statusArray[i] == 'P') {
       document.getElementById('person' + i).style.background ="green";
+      document.getElementById('person' + i).style.pointerEvents ="none";
     } else if(statusArray[i] == 'A') {
       document.getElementById('person' + i).style.background ="red";
+      document.getElementById('person' + i).style.pointerEvents ="none";
     } else if(statusArray[i] == 'L') {
       document.getElementById('person' + i).style.background ="yellow";
+      document.getElementById('person' + i).style.pointerEvents ="none";
     } else if(statusArray[i] == 'N') {
       document.getElementById('person' + i).style.color ="grey";
       document.getElementById('person' + i).style.borderColor ="grey";
@@ -133,22 +152,99 @@ async function colorCells() {
     }
   }
 
+  let rowNum = await matchDates('Calendar!A2:A56') + 2;
+  let startArray = await getCol('Calendar!B' + rowNum);
+  potentialStart = startArray[0] + "";
+  areYouLate();
+}
+
+function compareTimes(time1, time2) {
+  const [uselessNum, newTime] = time1.split("0");
+  const [h1, m1, s1] = newTime.split(":");
+  const [h2, m2, s2] = time2.split(":");
+
+  if (h1 < h2) return -1;
+  if (h1 > h2) return 1;
+  if (m1 < m2) return -1;
+  if (m1 > m2) return 1;
+  if (s1 < s2) return -1;
+  if (s1 > s2) return 1;
+  return 0; // times are equal
+}
+
+let intervalId;
+const areYouLate = async () => {
+  let now = new Date();
+  let currentTime = now.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit', second: '2-digit' });
+  if(compareTimes(currentTime, potentialStart) > 0) {
+    lateStatus = true;
+    document.getElementById("clock").style.color = "red";
+    for (const child of name_boxes.children) {
+      child.style.border = '2px solid red';
+    }
+  } else {
+    
+    lateStatus = false;
+  }
+
+  // Schedule the next execution
+  intervalId = setTimeout(areYouLate, 1000); 
+};
+
+/*async function areYouLate() {
+  let rowNum = await matchDates('Calendar!A2:A56') + 2;
+  let startArray = await getCol('Calendar!B' + rowNum);
+  let potentialStart = startArray[0];
+  console.log(potentialStart);
+  let now = new Date();
+  let currentTime = now.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit', second: '2-digit' });
+  console.log(currentTime);
+  if(currentTime > potentialStart) {
+    lateStatus = true;
+    document.getElementById("clock").style.color = "red";
+    const childDivs = name_boxes.children;
+    childDivs.forEach(div => {
+      // Change the border style
+      div.style.border = '2px solid red';
+    });
+  } else {
+    lateStatus = false;
+  }
+}*/
+
+async function colorCells() {
+  let colNum = await matchDates('Attendance!B4:BD4') + 2;
   let rowNum;
+  //setInterval(await areYouLate(), 1000);
+
   name_boxes.addEventListener('click', async function(event) {
     if (event.target !== name_boxes) {
       event.target.style.background = "green";
       rowNum = await matchNames('Attendance!A6:A45', event.target.textContent) + 6;
       const cellRange = 'Attendance!R' + rowNum + 'C' + colNum;
-      await gapi.client.sheets.spreadsheets.values.update({
-        spreadsheetId: '1WOSzkAosdAdrl_t6gvMJK7QsmFXeyZrBRp6hUtR9C4M',
-        range: cellRange,
-        valueInputOption: "USER_ENTERED",
-        resource: {
-          values: [
-            ["P"]
-          ],
-        },
-      });
+      if(lateStatus == true) {
+        await gapi.client.sheets.spreadsheets.values.update({
+          spreadsheetId: '1WOSzkAosdAdrl_t6gvMJK7QsmFXeyZrBRp6hUtR9C4M',
+          range: cellRange,
+          valueInputOption: "USER_ENTERED",
+          resource: {
+            values: [
+              ["*L*"]
+            ],
+          },
+        });
+      } else {
+        await gapi.client.sheets.spreadsheets.values.update({
+          spreadsheetId: '1WOSzkAosdAdrl_t6gvMJK7QsmFXeyZrBRp6hUtR9C4M',
+          range: cellRange,
+          valueInputOption: "USER_ENTERED",
+          resource: {
+            values: [
+              ["P"]
+            ],
+          },
+        });
+      } 
     }
   });
 }
