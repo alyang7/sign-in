@@ -8,14 +8,15 @@
   </head>
   <body>
     <div class="flex-container">
-      <div id="date" class="x1"></div>
-      <div id="agenda" class="x1"></div>
-      <div id="clock" class="x1"></div> 
+      <div id="date" class="x1 center header"></div>
+      <div id="agenda" class="x1 center header"></div>
+      <div id="clock" class="x1 center header"></div> 
     </div>
     <hr>
     
     <div id="name_boxes"></div>
-    <button id="authorize_button" onclick="listMajors()">Authorize</button>
+    <button id="authorize_button" onclick="handleAuthClick()">Authorize</button>
+    <button id="signout_button" onclick="handleSignoutClick()">Sign Out</button>
     <pre id="content" style="white-space: pre-wrap;"></pre>
     <script src="clock.js"></script>
     <script src="user.js"></script>
