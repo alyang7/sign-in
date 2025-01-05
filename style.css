@@ -3,11 +3,6 @@ hr {
   margin-bottom: 20px;
 }
 
-p {
-  margin-bottom: 15px;
-  font-size: 18px;
-}
-
 button {
   margin: 10px;
 }
@@ -33,6 +28,10 @@ button {
 .header {
   font-size: 2vw;
 }
+.instructions {
+  margin-bottom: 15px;
+  font-size: 18px;
+}
 
 /*Ids*/
 #name_boxes {
@@ -48,9 +47,6 @@ button {
   width: 15vw;
   text-align: center;
 }
-/*#name_boxes > div:hover {
-  cursor: pointer;
-}*/
 
 #signout_button {
   position:absolute;
@@ -83,4 +79,12 @@ button {
   box-shadow: 0 0 20px rgba(0, 0, 0, 0.3);
   z-index: 1600;
   visibility: visible;
+}
+
+#txt-search {
+  visibility: hidden;
+}
+
+#search {
+  visibility: hidden;
 }

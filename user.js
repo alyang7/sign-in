@@ -145,7 +145,7 @@ async function loadNames() {
     } else if(statusArray[i] == 'L') {
       document.getElementById('person' + i).style.background ="yellow";
       document.getElementById('person' + i).style.pointerEvents ="none";
-    } else if(statusArray[i] == 'N') {
+    } else if(statusArray[i] == 'N' || statusArray[i] == 'N (a)') {
       document.getElementById('person' + i).style.color ="grey";
       document.getElementById('person' + i).style.borderColor ="grey";
       document.getElementById('person' + i).style.pointerEvents ="none";

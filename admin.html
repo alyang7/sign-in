@@ -5,19 +5,28 @@
     <meta name="viewport" content="width=device-width">
     <title>Sign-In</title>
     <link href="style.css" rel="stylesheet" type="text/css" />
+    <link href="navbar.css" rel="stylesheet" type="text/css" />
+    <link href="collapse.css" rel="stylesheet" type="text/css" />
   </head>
   <body>
-    <div id="clock"></div> 
-    <h1 class="center">Searching 4 Shows</h1>
+
+    <div class="topnav" id="myTopnav">
+      <a id="clock"></a>
+      <a href="javascript:void(0);" onclick="homeReset()">Home</a>
+      <a href="javascript:void(0);" onclick="getStatus('P', 'Here')">Signed-In List</a>
+      <a href="javascript:void(0);" onclick="getStatus('', 'Not Here Yet')">Not-Signed-In List</a>
+      <a href="javascript:void(0);" onclick="displaySearch()">Search</a>
+      <a href="javascript:void(0);" onclick="">Timer</a>
+      <a href="javascript:void(0);" class="icon" onclick="myFunction()">&#9776;</a>
+    </div>
+
+    <h1 id="title" class="center">Admin Center</h1>
     <hr>
     <input id="txt-search" placeholder="Enter a name">
     <button id="search">Search</button>
-    <div id="container"></div>
-    <h1>Shows</h1>
-    <hr>
-    <div id="shows"></div>
-    <button id="authorize_button" onclick="listMajors()">Authorize</button>
-    <pre id="content" style="white-space: pre-wrap;"></pre>
+    <div id="container">Don't double click a tab. Be patient as it takes a few seconds to load</div>
+    <div id="results"></div>
+    
     <script src="clock.js"></script>
     <script src="admin.js"></script>
     <script async defer src="https://apis.google.com/js/api.js" onload="gapiLoaded()"></script>
