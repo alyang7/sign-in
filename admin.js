@@ -80,7 +80,7 @@ async function matchDates(dateRange) {
   let shell = await getCol(dateRange);
   const posDaysArray = shell[0];
 
-  var today = "Monday, January 6"; //change to getTodaysDate()
+  var today = getTodaysDate(); //"Monday, January 6"; //change to getTodaysDate()
   let colNum;
   for(let i = 0; i < posDaysArray.length; i++) {
     if(posDaysArray[i] == today) {
