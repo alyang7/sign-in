@@ -137,10 +137,10 @@ async function loadNames() {
   let statusArray = await getCol('Attendance!R6C' + colNum + ':R45C' + colNum);
   for(let i = 0; i < statusArray.length; i++) {
     if(statusArray[i] == 'P') {
-      document.getElementById('person' + i).style.background ="green";
+      document.getElementById('person' + i).style.background ="#3CB043";
       document.getElementById('person' + i).style.pointerEvents ="none";
     } else if(statusArray[i] == 'A') {
-      document.getElementById('person' + i).style.background ="red";
+      document.getElementById('person' + i).style.background ="#E3242B";
       document.getElementById('person' + i).style.pointerEvents ="none";
     } else if(statusArray[i] == 'L') {
       document.getElementById('person' + i).style.background ="yellow";
@@ -219,7 +219,7 @@ async function colorCells() {
 
   name_boxes.addEventListener('click', async function(event) {
     if (event.target !== name_boxes) {
-      event.target.style.background = "green";
+      event.target.style.background = "#3CB043";
       rowNum = await matchNames('Attendance!A6:A45', event.target.textContent) + 6;
       const cellRange = 'Attendance!R' + rowNum + 'C' + colNum;
       if(lateStatus == true) {

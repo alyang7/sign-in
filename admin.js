@@ -25,7 +25,6 @@ function makeCollapsible() {
 }
 
 const container = document.getElementById('container');
-const results = document.getElementById('results');
 const title = document.getElementById('title');
 
 const CLIENT_ID = '627128585914-0pbleafinvi8961jblr8dq7qf6eetnav.apps.googleusercontent.com';
@@ -125,8 +124,8 @@ async function getStatus(letter, type) {
       html += '<div class="content">';
       html += '<p>' + personData[0][1] + '</p>';
       html += '<p>' + personData[0][5] + '</p>';
-      html += '<p>' + personData[0][3] + '</p>';
-      html += '<p>' + personData[0][4] + '</p>';
+      html += '<p>' + '<a href="mailto:' + personData[0][3] + '">' + personData[0][3] + '\n' + '</a>' + '</p>';
+      html += '<p>' + '<a href="tel:' + personData[0][4] + '">' + personData[0][4] + '\n' + '</a>' + '</p>';
       html += '</div>';
     }
   }
@@ -135,21 +134,21 @@ async function getStatus(letter, type) {
   makeCollapsible();
 }
 
+//MAKE ALL ITEMS IN LIST COPYABLE
 async function displaySearch() {
   title.innerHTML = "Search Cast Info Sheet";
   document.getElementById("txt-search").style.visibility = 'visible';
   document.getElementById("search").style.visibility = 'visible';
 
   let html = '';
-  //let searchedhtml = '';
   const castInfo = await getCol('Info Sheet!A3:F42');
   for(let i = 0; i < castInfo.length; i++) {
     html += '<div class="collapsible">' + castInfo[i][0] + '</div>';
     html += '<div class="content">';
     html += '<p>' + castInfo[i][1] + '</p>';
     html += '<p>' + castInfo[i][5] + '</p>';
-    html += '<p>' + castInfo[i][3] + '</p>';
-    html += '<p>' + castInfo[i][4] + '</p>';
+    html += '<p>' + '<a href="mailto:' + castInfo[i][3] + '">' + castInfo[i][3] + '\n' + '</a>' + '</p>';
+    html += '<p>' + '<a href="tel:' + castInfo[i][4] + '">' + castInfo[i][4] + '\n' + '</a>' + '</p>';
     html += '</div>';
   }
 
@@ -172,12 +171,24 @@ async function displaySearch() {
       searchedhtml += '<div class="content">';
       searchedhtml += '<p>' + foundInfo[k][1] + '</p>';
       searchedhtml += '<p>' + foundInfo[k][5] + '</p>';
-      searchedhtml += '<p>' + foundInfo[k][3] + '</p>';
-      searchedhtml += '<p>' + foundInfo[k][4] + '</p>';
+      searchedhtml += '<p>' + '<a href="mailto:' + foundInfo[k][3] + '">' + foundInfo[k][3] + '\n' + '</a>' + '</p>';
+      searchedhtml += '<p>' + '<a href="tel:' + foundInfo[k][4] + '">' + foundInfo[k][4] + '\n' + '</a>' + '</p>';
       searchedhtml += '</div>';
     }
-    console.log(searchedhtml);
     container.innerHTML = searchedhtml;
     makeCollapsible();
   });
+}
+
+function displayTimer() {
+  title.innerHTML = "Timer - not working yet";
+  let html = '';
+  html += '<button></button>';
+  html += '<div></div>';
+  container.innerHTML = html;
+  //display 4 buttons + 1 container div
+  //sync to google
+  //onclick -> write time, display "reh started"
+  //onclick -> popup option of timer, start timer, write time, display timer
+  //onclick -> write time, display "reh ended"
 }
