@@ -98,11 +98,22 @@ async function getCol(colRange) {
 }
 
 async function matchDates(dateRange) {
-  let shell = await getCol(dateRange);
-  const posDaysArray = shell[0];
-
-  var today = getTodaysDate(); //"Monday, January 6"; //change to getTodaysDate()
+  let posDaysArray = await getCol(dateRange);
+  var today = getTodaysDate(); 
   let colNum;
+  for(let i = 0; i < posDaysArray.length; i++) {
+    if(posDaysArray[i] == today) {
+      colNum = i;
+    }
+  }
+  return colNum;
+}
+
+async function horizontalDates(dateRange) {
+  let colNum;
+  let shell = await getCol('Attendance!B4:BD4');
+  const posDaysArray = shell[0];
+  var today = getTodaysDate();
   for(let i = 0; i < posDaysArray.length; i++) {
     if(posDaysArray[i] == today) {
       colNum = i;
@@ -133,7 +144,7 @@ async function loadNames() {
     name_boxes.appendChild(oneName);
   }
 
-  let colNum = await matchDates('Attendance!B4:BD4') + 2;
+  let colNum = await horizontalDates('Attendance!B4:BD4') + 2;
   let statusArray = await getCol('Attendance!R6C' + colNum + ':R45C' + colNum);
   for(let i = 0; i < statusArray.length; i++) {
     if(statusArray[i] == 'P') {
@@ -195,7 +206,7 @@ const areYouLate = async () => {
 };
 
 async function colorCells() {
-  let colNum = await matchDates('Attendance!B4:BD4') + 2;
+  let colNum = await horizontalDates('Attendance!B4:BD4') + 2;
   let rowNum;
 
   name_boxes.addEventListener('click', async function(event) {
