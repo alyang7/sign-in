@@ -167,30 +167,48 @@ async function loadNames() {
   let startArray = await getCol('Calendar!B' + rowNum);
   potentialStart = startArray[0] + "";
   areYouLate();
+  updateDisplay();
 }
 
-function compareTimes(time1, time2) {
-  const [h1, m1, s1] = time1.split(":");
+let interval;
+const updateDisplay = async () => {
+  console.log("works");
+  let colNum = await horizontalDates('Attendance!B4:BD4') + 2;
+  let statusArray = await getCol('Attendance!R6C' + colNum + ':R45C' + colNum);
+  for(let i = 0; i < statusArray.length; i++) {
+    if(statusArray[i] == 'P') {
+      document.getElementById('person' + i).style.background ="#3CB043";
+      document.getElementById('person' + i).style.pointerEvents ="none";
+    }
+  }
 
-  const [h2, m2, s2] = time2.split(":");
-  const [secs1, meridiem1] = s1.split(" ");
-  const [secs2, meridiem2] = s2.split(" ");
-  if (meridiem1 < meridiem2) return -1;
-  if (meridiem1 > meridiem2) return 1;
-  if (h1 < h2) return -1;
-  if (h1 > h2) return 1;
-  if (m1 < m2) return -1;
-  if (m1 > m2) return 1;
-  if (secs1 < secs2) return -1;
-  if (secs1 > secs2) return 1;
-  return 0; // times are equal
+  interval = setTimeout(updateDisplay, 10000);
+};
+
+function compareTimes(givenTime) {
+  const now = new Date();
+  const currentHours = now.getHours();
+  const currentMinutes = now.getMinutes();
+  const currentSeconds = now.getSeconds();
+
+  const [givenHours, givenMinutes, givenSeconds] = givenTime.split(':').map(Number);
+
+  if (givenHours > currentHours ||
+      (givenHours === currentHours && givenMinutes > currentMinutes) ||
+      (givenHours === currentHours && givenMinutes === currentMinutes && givenSeconds > currentSeconds)) {
+    return -1;
+  } else if (givenHours < currentHours ||
+             (givenHours === currentHours && givenMinutes < currentMinutes) ||
+             (givenHours === currentHours && givenMinutes === currentMinutes && givenSeconds < currentSeconds)) {
+    return 1;
+  } else {
+    return 0;
+  }
 }
 
 let intervalId;
 const areYouLate = async () => {
-  let now = new Date();
-  let currentTime = now.toLocaleTimeString();
-  if(compareTimes(currentTime, potentialStart) > 0) {
+  if(compareTimes(potentialStart) > 0) {
     lateStatus = true;
     document.getElementById("clock").style.color = "red";
     for (const child of name_boxes.children) {
@@ -285,6 +303,8 @@ async function colorCells() {
   });
 }*/
 
+//let now = new Date();
+  //let currentTime = now.toLocaleTimeString();
 /*async function areYouLate() {
   let rowNum = await matchDates('Calendar!A2:A56') + 2;
   let startArray = await getCol('Calendar!B' + rowNum);
@@ -304,4 +324,21 @@ async function colorCells() {
   } else {
     lateStatus = false;
   }
+}*/
+
+/*function compareTimes(time1, time2) {
+  const [h1, m1, s1] = time1.split(":");
+
+  const [h2, m2, s2] = time2.split(":");
+  const [secs1, meridiem1] = s1.split(" ");
+  const [secs2, meridiem2] = s2.split(" ");
+  if (meridiem1 < meridiem2) return -1;
+  if (meridiem1 > meridiem2) return 1;
+  if (h1 < h2) return -1;
+  if (h1 > h2) return 1;
+  if (m1 < m2) return -1;
+  if (m1 > m2) return 1;
+  if (secs1 < secs2) return -1;
+  if (secs1 > secs2) return 1;
+  return 0; // times are equal
 }*/

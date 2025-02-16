@@ -180,6 +180,12 @@ async function displaySearch() {
   });
 }
 
+function displayEmergency() {
+  let html = '';
+  html += '<div class="contacts">' + '<a href="tel:9132204565">Aldric</a>' + '</div>';
+  container.innerHTML = html;
+}
+
 function displayTimer() {
   title.innerHTML = "Timer - not working yet";
   let html = '';
