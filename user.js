@@ -189,7 +189,7 @@ function compareTimes(givenTime) {
   const currentHours = now.getHours();
   const currentMinutes = now.getMinutes();
   const currentSeconds = now.getSeconds();
-  console.log(typeof(givenTime));
+  
   const [givenHours, givenMinutes, givenSeconds] = givenTime.split(':').map(Number);
 
   if (givenHours > currentHours ||
