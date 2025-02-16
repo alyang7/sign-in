@@ -172,7 +172,6 @@ async function loadNames() {
 
 let interval;
 const updateDisplay = async () => {
-  console.log("works");
   let colNum = await horizontalDates('Attendance!B4:BD4') + 2;
   let statusArray = await getCol('Attendance!R6C' + colNum + ':R45C' + colNum);
   for(let i = 0; i < statusArray.length; i++) {
@@ -190,7 +189,7 @@ function compareTimes(givenTime) {
   const currentHours = now.getHours();
   const currentMinutes = now.getMinutes();
   const currentSeconds = now.getSeconds();
-
+  console.log(typeof(givenTime));
   const [givenHours, givenMinutes, givenSeconds] = givenTime.split(':').map(Number);
 
   if (givenHours > currentHours ||
