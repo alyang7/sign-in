@@ -193,12 +193,12 @@ function compareTimes(givenTime) {
   const [givenHours, givenMinutes, givenSeconds] = givenTime.split(':').map(Number);
 
   if (givenHours > currentHours ||
-      (givenHours === currentHours && givenMinutes > currentMinutes) ||
-      (givenHours === currentHours && givenMinutes === currentMinutes && givenSeconds > currentSeconds)) {
+      (givenHours == currentHours && givenMinutes > currentMinutes) ||
+      (givenHours == currentHours && givenMinutes == currentMinutes && givenSeconds > currentSeconds)) {
     return -1;
   } else if (givenHours < currentHours ||
-             (givenHours === currentHours && givenMinutes < currentMinutes) ||
-             (givenHours === currentHours && givenMinutes === currentMinutes && givenSeconds < currentSeconds)) {
+             (givenHours == currentHours && givenMinutes < currentMinutes) ||
+             (givenHours == currentHours && givenMinutes == currentMinutes && givenSeconds < currentSeconds)) {
     return 1;
   } else {
     return 0;
