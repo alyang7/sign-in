@@ -1,7 +1,3 @@
-/*TODO: 
-get as input: client_id, api_key, spreadsheetID
-attendance column and row, calendar column, info sheet column*/
-
 const date = document.getElementById("date");
 const agenda = document.getElementById("agenda");
 const name_boxes = document.getElementById('name_boxes');
@@ -330,68 +326,3 @@ async function colorCells() {
     }
   });
 }
-
-/*async function listMajors() {
-  let response;
-  try {
-    // Fetch first 10 files
-    response = await gapi.client.sheets.spreadsheets.values.get({
-      spreadsheetId: '1WOSzkAosdAdrl_t6gvMJK7QsmFXeyZrBRp6hUtR9C4M',
-      range: 'Attendance!A6:A45',
-    });
-  } catch (err) {
-    document.getElementById('content').innerText = err.message;
-    return;
-  }
-  const range = response.result;
-  if (!range || !range.values || range.values.length == 0) {
-    document.getElementById('content').innerText = 'No values found.';
-    return;
-  }
-  // Flatten to string to display
-  const output = range.values.reduce(
-      (str, row) => `${str}${row[0]}\n`, '');
-  document.getElementById('content').innerText = output;
-
-  await gapi.client.sheets.spreadsheets.values.append({
-    spreadsheetId: '1WOSzkAosdAdrl_t6gvMJK7QsmFXeyZrBRp6hUtR9C4M',
-    range: "Info Sheet!A:B",
-    valueInputOption: "USER_ENTERED",
-    resource: {
-      values: [
-        ["name", "number"]
-      ],
-    },
-  });
-  await gapi.client.sheets.spreadsheets.values.update({
-    spreadsheetId: '1WOSzkAosdAdrl_t6gvMJK7QsmFXeyZrBRp6hUtR9C4M',
-    range: 'Info Sheet!A51',
-    valueInputOption: "USER_ENTERED",
-    resource: {
-      values: [
-        ["P"]
-      ],
-    },
-  });
-}*/
-
-/*async function areYouLate() {
-  let rowNum = await matchDates('Calendar!A2:A56') + 2;
-  let startArray = await getCol('Calendar!B' + rowNum);
-  let potentialStart = startArray[0];
-  console.log(potentialStart);
-  let now = new Date();
-  let currentTime = now.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit', second: '2-digit' });
-  console.log(currentTime);
-  if(currentTime > potentialStart) {
-    lateStatus = true;
-    document.getElementById("clock").style.color = "red";
-    const childDivs = name_boxes.children;
-    childDivs.forEach(div => {
-      // Change the border style
-      div.style.border = '2px solid red';
-    });
-  } else {
-    lateStatus = false;
-  }
-}*/
