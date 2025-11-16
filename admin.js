@@ -184,8 +184,6 @@ async function getStatus(letter, type) {
   let html = '';
   let colNum = await matchDates('Attendance!B4:' + maxAttendanceCol + '4') + 2;
   let statusArray = await getCol('Attendance!R6C' + colNum + ':R46C' + colNum);
-  console.log(colNum);
-  console.log(statusArray);
   for(let i = 0; i < statusArray.length; i++) {
     if(statusArray[i] == letter) {
       let nameRow = i + 3;
