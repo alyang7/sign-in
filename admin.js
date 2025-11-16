@@ -61,7 +61,7 @@ async function getMaxRow(sheetName) {
   try {
     const range = `${sheetName}!A:A`;
 
-    const response = await gapi.client.sheets.spreadsheets.values.get({
+    response = await gapi.client.sheets.spreadsheets.values.get({
       spreadsheetId: SPREADSHEET_ID,
       range: range,
     });
@@ -94,7 +94,7 @@ async function getMaxCol(sheetName) {
   try {
     const range = `${sheetName}!2:2`;
 
-    const response = await gapi.client.sheets.spreadsheets.values.get({
+    response = await gapi.client.sheets.spreadsheets.values.get({
       spreadsheetId: SPREADSHEET_ID,
       range: range,
     });
