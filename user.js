@@ -1,3 +1,7 @@
+/*TODO: 
+get as input: client_id, api_key, spreadsheetID
+attendance column and row, calendar column, info sheet column*/
+
 const date = document.getElementById("date");
 const agenda = document.getElementById("agenda");
 const name_boxes = document.getElementById('name_boxes');
@@ -14,14 +18,16 @@ function openPopup() {
 }
 
 /*google sheets initialization*/
-const CLIENT_ID = '627128585914-0pbleafinvi8961jblr8dq7qf6eetnav.apps.googleusercontent.com';
-const API_KEY = 'AIzaSyAuyP4bKMSn6qAEtIpEYGjUFi5vxlVrFow';
+const CLIENT_ID = '627128585914-2khuh7u0pp39r6uuvporu41mps56tgk7.apps.googleusercontent.com';
+const API_KEY = 'AIzaSyAdUWiOLG6kacbxMiyrH1zRAdDD4VfkJ20';
+const SPREADSHEET_ID = '1xwaFbean5QBkc6xcDip2o-SdgOyVA5KX4rRebsagiAY';
 const DISCOVERY_DOC = 'https://sheets.googleapis.com/$discovery/rest?version=v4';
 const SCOPES = 'https://www.googleapis.com/auth/spreadsheets';
 let tokenClient;
 let gapiInited = false;
 let gisInited = false;
 
+//Loads all google sheets api stuff
 function gapiLoaded() {
   gapi.load('client', initializeGapiClient);
 }
@@ -30,9 +36,7 @@ async function initializeGapiClient() {
     apiKey: API_KEY,
     discoveryDocs: [DISCOVERY_DOC],
   });
-  gapiInited = true;
-  loadNames();
-  getAgenda();
+  gapiInited = true;  
 }
 function gisLoaded() {
   tokenClient = google.accounts.oauth2.initTokenClient({
@@ -42,19 +46,17 @@ function gisLoaded() {
   });
   gisInited = true;
 }
+
+//handles Google sign-in for editing spreadsheet
 function handleAuthClick() {
   tokenClient.callback = async (resp) => {
     if (resp.error !== undefined) {
       throw (resp);
     }
   };  
-  tokenClient.requestAccessToken({prompt: ''});
-  colorCells();
-  for (const child of name_boxes.children) {
-    child.addEventListener("mouseover", function() {
-      this.style.cursor = "pointer";
-    });
-  }
+  tokenClient.requestAccessToken({prompt: ''}); 
+  
+  document.getElementById('load_button').style.visibility = 'visible';
   document.getElementById('signout_button').style.visibility = 'visible';
   openPopup();
 }
@@ -63,11 +65,87 @@ function handleSignoutClick() {
   if (token !== null) {
     google.accounts.oauth2.revoke(token.access_token);
     gapi.client.setToken('');
-    document.getElementById('content').innerText = '';
+    document.getElementById('signout_button').style.visibility = 'hidden';
   }
   openPopup();
 }
 
+function loadFunctions() {
+  loadNames();
+  getAgenda();
+  colorCells();
+  for (const child of name_boxes.children) {
+    child.addEventListener("mouseover", function() {
+      this.style.cursor = "pointer";
+    });
+  }
+  document.getElementById('load_button').style.visibility = 'hidden';
+}
+
+
+async function getMaxRow(sheetName) {
+  try {
+    const range = `${sheetName}!A:A`;
+
+    const response = await gapi.client.sheets.spreadsheets.values.get({
+      spreadsheetId: SPREADSHEET_ID,
+      range: range,
+    });
+
+    const values = response.result.values;
+
+    if (!values || values.length === 0) {
+      console.log('No data found.');
+      return 0;
+    }
+
+    // Iterate through the flattened array of values
+    for (let i = 0; i < values.length; i++) {
+      const cellValue = values[i][0]; 
+      if (cellValue && cellValue.includes('-')) {
+        return i; 
+      }
+    }
+
+    console.log('No dash found in the specified range.');
+    return values.length; // Return the total number of rows if no dash is found
+
+  } catch (err) {
+    console.error('The API returned an error: ' + err);
+    return -1;
+  }
+}
+
+async function getMaxCol(sheetName) {
+  try {
+    const range = `${sheetName}!2:2`;
+
+    const response = await gapi.client.sheets.spreadsheets.values.get({
+      spreadsheetId: SPREADSHEET_ID,
+      range: range,
+    });
+
+    const values = response.result.values;
+    if (!values || values.length === 0) {
+      console.log('No data found.');
+      return 0;
+    }
+
+    // Iterate through the flattened array of values and convert to letters
+    column = values[0].length - 1;
+    let temp, letter = '';
+    while (column > 0) {
+      temp = (column - 1) % 26;
+      letter = String.fromCharCode(temp + 65) + letter;
+      column = (column - temp - 1) / 26;
+    }
+    return letter;
+
+  } catch (err) {
+    console.error('The API returned an error: ' + err);
+    return -1;
+  }
+}
 
 window.onload = getTodaysDate();
 function getTodaysDate() {
@@ -83,20 +161,24 @@ function getTodaysDate() {
   return today;
 }
 
+//matches current date to the agenda in the Calendar tab
 async function getAgenda() {
-  let rowNum = await matchDates('Calendar!A2:A56') + 2;
+  const maxCalendarRow = await getMaxRow("Calendar");
+  let rowNum = await matchDates('Calendar!A2:A' + maxCalendarRow) + 2;
   const todayAgenda = await getCol('Calendar!D' + rowNum);
   agenda.innerHTML = "Today's Agenda: " + todayAgenda;
 }
 
+//get all data for a specific column
 async function getCol(colRange) {
   cols = await gapi.client.sheets.spreadsheets.values.get({
-    spreadsheetId: '1WOSzkAosdAdrl_t6gvMJK7QsmFXeyZrBRp6hUtR9C4M',
+    spreadsheetId: SPREADSHEET_ID,
     range: colRange,
   });
   return cols.result.values;
 }
 
+//get info for current day from the Calendar tab
 async function matchDates(dateRange) {
   let posDaysArray = await getCol(dateRange);
   var today = getTodaysDate(); 
@@ -109,9 +191,11 @@ async function matchDates(dateRange) {
   return colNum;
 }
 
+//get the current day from the Attendance tab
 async function horizontalDates(dateRange) {
   let colNum;
-  let shell = await getCol('Attendance!B4:BD4');
+  const maxAttendanceCol = await getMaxCol("Attendance");
+  let shell = await getCol('Attendance!B4:' + maxAttendanceCol + '4');
   const posDaysArray = shell[0];
   var today = getTodaysDate();
   for(let i = 0; i < posDaysArray.length; i++) {
@@ -122,6 +206,7 @@ async function horizontalDates(dateRange) {
   return colNum;
 }
 
+//makes colorCells() more readable
 async function matchNames(dateRange, searchedName) {
   let posNamesArray = await getCol(dateRange);
   let rowNum;
@@ -133,8 +218,13 @@ async function matchNames(dateRange, searchedName) {
   return rowNum;
 }
 
+//populates name boxes and colors
 async function loadNames() {
-  const nameArray = await getCol('Attendance!A6:A45');
+  const maxAttendanceCol = await getMaxCol("Attendance");
+  const maxAttendanceRow = await getMaxRow("Attendance");
+  const maxCalendarRow = await getMaxRow("Calendar");
+
+  const nameArray = await getCol('Attendance!A6:A' + maxAttendanceRow);
 
   for(let i = 0; i < nameArray.length; i += 1){
     let oneName = document.createElement('div');
@@ -144,7 +234,7 @@ async function loadNames() {
     name_boxes.appendChild(oneName);
   }
 
-  let colNum = await horizontalDates('Attendance!B4:BD4') + 2;
+  let colNum = await horizontalDates('Attendance!B4:'+ maxAttendanceCol + '4') + 2;
   let statusArray = await getCol('Attendance!R6C' + colNum + ':R45C' + colNum);
   for(let i = 0; i < statusArray.length; i++) {
     if(statusArray[i] == 'P') {
@@ -163,33 +253,30 @@ async function loadNames() {
     }
   }
 
-  let rowNum = await matchDates('Calendar!A2:A56') + 2;
+  let rowNum = await matchDates('Calendar!A2:A' + maxCalendarRow) + 2;
   let startArray = await getCol('Calendar!B' + rowNum);
   potentialStart = startArray[0] + "";
   areYouLate();
 }
 
+//used to check for tardy
 function compareTimes(time1, time2) {
   const [h1, m1, s1] = time1.split(":");
-
   const [h2, m2, s2] = time2.split(":");
-  const [secs1, meridiem1] = s1.split(" ");
-  const [secs2, meridiem2] = s2.split(" ");
-  if (meridiem1 < meridiem2) return -1;
-  if (meridiem1 > meridiem2) return 1;
-  if (h1 < h2) return -1;
-  if (h1 > h2) return 1;
-  if (m1 < m2) return -1;
-  if (m1 > m2) return 1;
-  if (secs1 < secs2) return -1;
-  if (secs1 > secs2) return 1;
+  if (parseInt(h1) < parseInt(h2)) return -1;
+  if (parseInt(h1) > parseInt(h2)) return 1;
+  if (parseInt(m1) < parseInt(m2)) return -1;
+  if (parseInt(m1) > parseInt(m2)) return 1;
+  if (parseInt(s1) < parseInt(s2)) return -1;
+  if (parseInt(s1) > parseInt(s2)) return 1;
   return 0; // times are equal
 }
 
+//checks for tardy
 let intervalId;
 const areYouLate = async () => {
   let now = new Date();
-  let currentTime = now.toLocaleTimeString();
+  let currentTime = now.toLocaleTimeString('en-US', { hour12: false });
   if(compareTimes(currentTime, potentialStart) > 0) {
     lateStatus = true;
     document.getElementById("clock").style.color = "red";
@@ -205,18 +292,21 @@ const areYouLate = async () => {
   intervalId = setTimeout(areYouLate, 1000); 
 };
 
+//fills in google spreadsheet when actor signs in (Attendance tab)
 async function colorCells() {
-  let colNum = await horizontalDates('Attendance!B4:BD4') + 2;
+  const maxAttendanceCol = await getMaxCol("Attendance");
+  const maxAttendanceRow = await getMaxRow("Attendance");
+  let colNum = await horizontalDates('Attendance!B4:' + maxAttendanceCol + '4') + 2;
   let rowNum;
 
   name_boxes.addEventListener('click', async function(event) {
     if (event.target !== name_boxes) {
       event.target.style.background = "#3CB043";
-      rowNum = await matchNames('Attendance!A6:A45', event.target.textContent) + 6;
+      rowNum = await matchNames('Attendance!A6:A' + maxAttendanceRow, event.target.textContent) + 6;
       const cellRange = 'Attendance!R' + rowNum + 'C' + colNum;
       if(lateStatus == true) {
         await gapi.client.sheets.spreadsheets.values.update({
-          spreadsheetId: '1WOSzkAosdAdrl_t6gvMJK7QsmFXeyZrBRp6hUtR9C4M',
+          spreadsheetId: SPREADSHEET_ID,
           range: cellRange,
           valueInputOption: "USER_ENTERED",
           resource: {
@@ -227,7 +317,7 @@ async function colorCells() {
         });
       } else {
         await gapi.client.sheets.spreadsheets.values.update({
-          spreadsheetId: '1WOSzkAosdAdrl_t6gvMJK7QsmFXeyZrBRp6hUtR9C4M',
+          spreadsheetId: SPREADSHEET_ID,
           range: cellRange,
           valueInputOption: "USER_ENTERED",
           resource: {

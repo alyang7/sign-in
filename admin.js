@@ -27,14 +27,16 @@ function makeCollapsible() {
 const container = document.getElementById('container');
 const title = document.getElementById('title');
 
-const CLIENT_ID = '627128585914-0pbleafinvi8961jblr8dq7qf6eetnav.apps.googleusercontent.com';
-const API_KEY = 'AIzaSyAuyP4bKMSn6qAEtIpEYGjUFi5vxlVrFow';
+const CLIENT_ID = '627128585914-2khuh7u0pp39r6uuvporu41mps56tgk7.apps.googleusercontent.com';
+const API_KEY = 'AIzaSyAdUWiOLG6kacbxMiyrH1zRAdDD4VfkJ20';
+const SPREADSHEET_ID = '1xwaFbean5QBkc6xcDip2o-SdgOyVA5KX4rRebsagiAY';
 const DISCOVERY_DOC = 'https://sheets.googleapis.com/$discovery/rest?version=v4';
 const SCOPES = 'https://www.googleapis.com/auth/spreadsheets';
 let tokenClient;
 let gapiInited = false;
 let gisInited = false;
 
+//Loads all google sheets api stuff
 function gapiLoaded() {
   gapi.load('client', initializeGapiClient);
 }
@@ -55,6 +57,70 @@ function gisLoaded() {
 }
    
 
+async function getMaxRow(sheetName) {
+  try {
+    const range = `${sheetName}!A:A`;
+
+    const response = await gapi.client.sheets.spreadsheets.values.get({
+      spreadsheetId: SPREADSHEET_ID,
+      range: range,
+    });
+
+    const values = response.result.values;
+
+    if (!values || values.length === 0) {
+      console.log('No data found.');
+      return 0;
+    }
+
+    // Iterate through the flattened array of values
+    for (let i = 0; i < values.length; i++) {
+      const cellValue = values[i][0]; 
+      if (cellValue && cellValue.includes('-')) {
+        return i; 
+      }
+    }
+
+    console.log('No dash found in the specified range.');
+    return values.length; // Return the total number of rows if no dash is found
+
+  } catch (err) {
+    console.error('The API returned an error: ' + err);
+    return -1;
+  }
+}
+
+async function getMaxCol(sheetName) {
+  try {
+    const range = `${sheetName}!2:2`;
+
+    const response = await gapi.client.sheets.spreadsheets.values.get({
+      spreadsheetId: SPREADSHEET_ID,
+      range: range,
+    });
+
+    const values = response.result.values;
+    if (!values || values.length === 0) {
+      console.log('No data found.');
+      return 0;
+    }
+
+    // Iterate through the flattened array of values and convert to letters
+    column = values[0].length - 1;
+    let temp, letter = '';
+    while (column > 0) {
+      temp = (column - 1) % 26;
+      letter = String.fromCharCode(temp + 65) + letter;
+      column = (column - temp - 1) / 26;
+    }
+    return letter;
+
+  } catch (err) {
+    console.error('The API returned an error: ' + err);
+    return -1;
+  }
+}
+
 window.onload = getTodaysDate();
 function getTodaysDate() {
   var objToday = new Date(),
@@ -70,7 +136,7 @@ function getTodaysDate() {
 
 async function getCol(colRange) {
   cols = await gapi.client.sheets.spreadsheets.values.get({
-    spreadsheetId: '1WOSzkAosdAdrl_t6gvMJK7QsmFXeyZrBRp6hUtR9C4M',
+    spreadsheetId: SPREADSHEET_ID,
     range: colRange,
   });
   return cols.result.values;
@@ -80,7 +146,7 @@ async function matchDates(dateRange) {
   let shell = await getCol(dateRange);
   const posDaysArray = shell[0];
 
-  var today = getTodaysDate(); //"Monday, January 6"; //change to getTodaysDate()
+  var today = getTodaysDate(); 
   let colNum;
   for(let i = 0; i < posDaysArray.length; i++) {
     if(posDaysArray[i] == today) {
@@ -103,19 +169,23 @@ async function matchNames(dateRange, searchedName) {
 
 
 function homeReset() {
-  container.innerHTML = "Don't double click a tab. Be patient as it takes a few seconds to load. Click the tab again to refresh";
+  container.innerHTML = "Don't double click a tab. Be patient, as it takes a few seconds to load. Click the tab again to refresh";
   title.innerHTML = "Admin Center";
   document.getElementById("txt-search").style.visibility = 'hidden';
   document.getElementById("search").style.visibility = 'hidden';
 }
 
 async function getStatus(letter, type) {
+  const maxAttendanceCol = await getMaxCol("Attendance");
+
   title.innerHTML = "Cast Members Who Are " + type;
   document.getElementById("txt-search").style.visibility = 'hidden';
   document.getElementById("search").style.visibility = 'hidden';
   let html = '';
-  let colNum = await matchDates('Attendance!B4:BD4') + 2;
+  let colNum = await matchDates('Attendance!B4:' + maxAttendanceCol + '4') + 2;
   let statusArray = await getCol('Attendance!R6C' + colNum + ':R46C' + colNum);
+  console.log(colNum);
+  console.log(statusArray);
   for(let i = 0; i < statusArray.length; i++) {
     if(statusArray[i] == letter) {
       let nameRow = i + 3;
@@ -141,7 +211,8 @@ async function displaySearch() {
   document.getElementById("search").style.visibility = 'visible';
 
   let html = '';
-  const castInfo = await getCol('Info Sheet!A3:F42');
+  const maxInfoSheetRow = await getMaxRow("Info Sheet");
+  const castInfo = await getCol('Info Sheet!A3:F' + maxInfoSheetRow);
   for(let i = 0; i < castInfo.length; i++) {
     html += '<div class="collapsible">' + castInfo[i][0] + '</div>';
     html += '<div class="content">';

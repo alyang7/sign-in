@@ -13,6 +13,6 @@ function checkValue(){
     location.href="admin.html";
   } else {
     alert("Nope, try again");
-    pswd.value = "";
   };
+  pswd.value = "";
 }

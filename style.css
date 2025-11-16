@@ -48,10 +48,31 @@ button {
   text-align: center;
 }
 
+#authorize_button {
+  background: white;
+  color: #444;
+  border-radius: 5px;
+  border: thin solid #888;
+  box-shadow: 1px 1px 1px grey;
+  white-space: nowrap;
+  vertical-align: middle;
+  padding-left: 42px;
+  padding-right: 42px;
+  font-size: 14px;
+  font-weight: bold;
+  /* Use the Roboto font that is loaded in the <head> */
+  font-family: 'Roboto', sans-serif;
+  
+}
+
 #signout_button {
   position:absolute;
   bottom:0;
   right:0;
+  visibility: hidden;
+}
+
+#load_button {
   visibility: hidden;
 }
 

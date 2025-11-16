@@ -7,7 +7,7 @@
     <link href="style.css" rel="stylesheet" type="text/css" />
   </head>
   <body>
-    <h1 class="center">Shrek the Musical: Sign-In Sheet</h1>
+    <h1 class="center">Theater Sign-In Sheet</h1>
     <hr>
     <div class="flex-container">
       <button class="signinbutton x1" onclick="location.href='user.html'">I am a User</button>
@@ -15,7 +15,7 @@
     </div>
     <div id="pswdPopUp">
       <p class="instructions">Sign In: </p>
-      <input id="pswdBox" placeholder="Enter password">
+      <input id="pswdBox" autocomplete="off" type="password" placeholder="Enter password">
       <button onclick="checkValue()">Enter</button>
       <button onclick="openPopup()">Cancel</button>
     </div>
