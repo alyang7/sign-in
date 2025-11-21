@@ -33,6 +33,15 @@ button {
   font-size: 18px;
 }
 
+.creator_tag {
+  position:absolute;
+  bottom:0;
+  left:0;
+  padding-left: 10px;
+  font: 'Roboto';
+  font-size: 0.75vw;
+}
+
 /*Ids*/
 #name_boxes {
   display: flex;
