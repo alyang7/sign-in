@@ -173,7 +173,7 @@ async function getCol(colRange) {
   });
   
   //make empty array if no values exist
-  if(cols?.result.values == null) {
+  if(cols?.result?.values == null) {
     let blank = [];
     let numRows = await getMaxRow("Attendance");
     for(let i = 0; i < (numRows - 5); i++) {

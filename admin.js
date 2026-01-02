@@ -140,7 +140,7 @@ async function getCol(colRange) {
     range: colRange,
   });
 
-  if(cols?.result.values == null) {
+  if(cols?.result?.values == null) {
     let blank = [];
     let numRows = await getMaxRow("Attendance");
     for(let i = 0; i < (numRows - 5); i++) {
@@ -182,7 +182,7 @@ async function getStatus(letter, type) {
   document.getElementById("search").style.visibility = 'hidden';
   let html = '';
   let colNum = await matchDates('Attendance!B4:' + maxAttendanceCol + '4') + 2;
-  let statusArray = await getCol('Attendance!R6C' + colNum + ':R' + maxAttendanceRow + 'C' + colNum);
+  let statusArray = await getCol('Attendance!R6C' + colNum + ':R' + (maxAttendanceRow + 1) + 'C' + colNum);
   for(let i = 0; i < statusArray.length; i++) {
     if(statusArray[i] == letter) {
       let nameRow = i + 3;
