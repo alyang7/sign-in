@@ -98,7 +98,7 @@ async function getMaxRow(sheetName) {
     // Iterate through the flattened array of values
     for (let i = 0; i < values.length; i++) {
       const cellValue = values[i][0]; 
-      if (cellValue && cellValue.includes('-')) {
+      if (cellValue && cellValue.includes('\\')) {
         return i; 
       }
     }
@@ -171,6 +171,16 @@ async function getCol(colRange) {
     spreadsheetId: SPREADSHEET_ID,
     range: colRange,
   });
+  
+  //make empty array if no values exist
+  if(cols?.result.values == null) {
+    let blank = [];
+    for(let i = 0; i < (getMaxRow() - 5); i++) {
+      blank[i] = [""];
+    }
+    return blank;
+  }
+
   return cols.result.values;
 }
 
@@ -221,7 +231,6 @@ async function loadNames() {
   const maxCalendarRow = await getMaxRow("Calendar");
 
   const nameArray = await getCol('Attendance!A6:A' + maxAttendanceRow);
-
   for(let i = 0; i < nameArray.length; i += 1){
     let oneName = document.createElement('div');
     const uniqueId = 'person' + i;
@@ -231,7 +240,7 @@ async function loadNames() {
   }
 
   let colNum = await horizontalDates('Attendance!B4:'+ maxAttendanceCol + '4') + 2;
-  let statusArray = await getCol('Attendance!R6C' + colNum + ':R45C' + colNum);
+  let statusArray = await getCol('Attendance!R6C' + colNum + ':R' + maxAttendanceRow + 'C' + colNum);
   for(let i = 0; i < statusArray.length; i++) {
     if(statusArray[i] == 'P') {
       document.getElementById('person' + i).style.background ="#3CB043";

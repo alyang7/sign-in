@@ -76,7 +76,7 @@ async function getMaxRow(sheetName) {
     // Iterate through the flattened array of values
     for (let i = 0; i < values.length; i++) {
       const cellValue = values[i][0]; 
-      if (cellValue && cellValue.includes('-')) {
+      if (cellValue && cellValue.includes('\\')) {
         return i; 
       }
     }
@@ -139,6 +139,16 @@ async function getCol(colRange) {
     spreadsheetId: SPREADSHEET_ID,
     range: colRange,
   });
+
+  if(cols?.result.values == null) {
+    let blank = [];
+    let numRows = await getMaxRow("Attendance");
+    for(let i = 0; i < (numRows - 5); i++) {
+      blank[i] = [""];
+    }
+    return blank;
+  }
+
   return cols.result.values;
 }
 
@@ -156,18 +166,6 @@ async function matchDates(dateRange) {
   return colNum;
 }
 
-async function matchNames(dateRange, searchedName) {
-  let posNamesArray = await getCol(dateRange);
-  let rowNum;
-  for(let i = 0; i < posNamesArray.length; i++) {
-    if(posNamesArray[i] == searchedName) {
-      rowNum = i;
-    }
-  }
-  return rowNum;
-}
-
-
 function homeReset() {
   container.innerHTML = "Don't double click a tab. Be patient, as it takes a few seconds to load. Click the tab again to refresh";
   title.innerHTML = "Admin Center";
@@ -177,13 +175,14 @@ function homeReset() {
 
 async function getStatus(letter, type) {
   const maxAttendanceCol = await getMaxCol("Attendance");
+  const maxAttendanceRow = await getMaxRow("Attendance");
 
   title.innerHTML = "Cast Members Who Are " + type;
   document.getElementById("txt-search").style.visibility = 'hidden';
   document.getElementById("search").style.visibility = 'hidden';
   let html = '';
   let colNum = await matchDates('Attendance!B4:' + maxAttendanceCol + '4') + 2;
-  let statusArray = await getCol('Attendance!R6C' + colNum + ':R46C' + colNum);
+  let statusArray = await getCol('Attendance!R6C' + colNum + ':R' + maxAttendanceRow + 'C' + colNum);
   for(let i = 0; i < statusArray.length; i++) {
     if(statusArray[i] == letter) {
       let nameRow = i + 3;
