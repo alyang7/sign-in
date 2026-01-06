@@ -16,6 +16,14 @@ button {
   display: flex; 
   justify-content: center;
 }
+.footer-flex {
+  display: flex;
+  justify-content: space-between;
+}
+.column-flex {
+  display: flex;
+  flex-direction: column;
+}
 .x1 { flex: 1; }
 .x2 { flex: 2; }
 
@@ -34,7 +42,6 @@ button {
 }
 
 .creator_tag {
-  position:absolute;
   bottom:0;
   left:0;
   padding-left: 10px;
@@ -74,7 +81,7 @@ button {
 }
 
 #signout_button {
-  position:absolute;
+  align-self: flex-end;
   bottom:0;
   right:0;
   visibility: hidden;

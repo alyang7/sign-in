@@ -14,15 +14,20 @@
     </div>
     <hr>
     
-    <button id="load_button" onclick="loadFunctions()">Access Google Sheet Info</button>
+    <div class="column-flex">
+      <button id="load_button" onclick="loadFunctions()">Access Google Sheet Info</button>
 
-    <div id="name_boxes"></div>
-    <div id="signinPopUp">
-      <p class="instructions">In order to get started: </p>
-      <button id="authorize_button" onclick="handleAuthClick()">Log In with Google</button>
+      <div id="name_boxes"></div>
+      <div id="signinPopUp">
+        <p class="instructions">In order to get started: </p>
+        <button id="authorize_button" onclick="handleAuthClick()">Log In with Google</button>
+      </div>
+
+      <div class="footer-flex">
+        <p class="creator_tag">Made and maintained by Aldric Yang</p>
+        <button id="signout_button" onclick="handleSignoutClick()">Sign Out</button>
+      </div>
     </div>
-    <p class="creator_tag">Made and maintained by Aldric Yang</p>
-    <button id="signout_button" onclick="handleSignoutClick()">Sign Out</button>
     <script src="clock.js"></script>
     <script src="user.js"></script>
     <script async defer src="https://apis.google.com/js/api.js" onload="gapiLoaded()"></script>
